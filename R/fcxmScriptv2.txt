@@ -1,0 +1,78 @@
+setwd("//rq6itfilevs01/users$/JJones/Documents/FCXM/FCXM Audit/FCXM data tracking in R/FCXM 2017 R")
+
+
+
+#ggplot
+library(ggplot2)
+library(scales)
+library(sqldf)
+require(reshape2)
+
+#Get Data
+dat <- read.csv(file="2017FCXMdata.csv", header = TRUE)
+
+
+
+#Subset data by cell type (T/B), cell source (LRD/CD) and Sample (AB/VPS/POS)
+T.LRD.AB <- subset(dat, Cell == "T"  & Xmtype == "LRD" & Sample == "AB")
+T.LRD.VPS <- subset(dat, Cell == "T"  & Xmtype == "LRD" & Sample == "VPS")
+T.LRD.POS <- subset(dat, Cell == "T"  & Xmtype == "LRD" & Sample == "POS")
+
+T.CD.AB <- subset(dat, Cell == "T"  & Xmtype == "CD" & Sample == "AB")
+T.CD.VPS <- subset(dat, Cell == "T"  & Xmtype == "CD" & Sample == "VPS")
+T.CD.POS <- subset(dat, Cell == "T"  & Xmtype == "CD" & Sample == "POS")
+
+
+B.LRD.AB <- subset(dat, Cell == "B"  & Xmtype == "LRD" & Sample == "AB")
+B.LRD.VPS <- subset(dat, Cell == "B"  & Xmtype == "LRD" & Sample == "VPS")
+B.LRD.POS <- subset(dat, Cell == "B"  & Xmtype == "LRD" & Sample == "POS")
+
+B.CD.AB <- subset(dat, Cell == "B"  & Xmtype == "CD" & Sample == "AB")
+B.CD.VPS <- subset(dat, Cell == "B"  & Xmtype == "CD" & Sample == "VPS")
+B.CD.POS <- subset(dat, Cell == "B"  & Xmtype == "CD" & Sample == "POS")
+
+
+
+#Set data frame and Column headers for table
+df <- data.frame(matrix(ncol = 12, nrow = 6))
+x <- c("Jan", "Feb", "Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
+y <- c( "N", "N data","Mean","SD","Sqrt(nObs)","UoM" )
+colnames(df) <- x
+rownames(df) <-y
+
+
+ss <- T.LRD.AB[1:20,]
+
+
+
+
+
+for (iMonth in 1:12){
+
+			myMonth <- subset(T.LRD.AB,Month== iMonth & Year == 2017)
+			#n <- sqldf("select distinct(XMID) from Jan")   LISTS UNIQUE XMS BY NAME, NICE FUNC BUT NOT USED
+			
+			
+			#Get month stats
+			n <-  round(length(unique(myMonth[,"XMID"])),digits=2)
+			nObs <- round(nrow(myMonth) ,2)
+			Av <-   round( (mean(myMonth[,"MFI"])),digits=2)
+			SD <-  round( (sd(myMonth[,"MFI"])),digits=2)
+			sqrtN <- round(sqrt(nObs),digits=2)
+			UoM <-   round( (SD / sqrtN),digits=2)
+
+
+
+			#Combine stats into vector
+			stats <- c(n,nObs,Av,SD,sqrtN,UoM)
+
+			#Now fill each row with the month values
+			for (i in 1:nrow(df)) {
+				df[i,iMonth] = stats[i]
+
+			}
+
+}
+
+
+
