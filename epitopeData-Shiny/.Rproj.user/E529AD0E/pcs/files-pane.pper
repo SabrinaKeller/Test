@@ -1,0 +1,9 @@
+{
+    "path" : "~/MEGAsync/shiny/epitopeData-Shiny/epData",
+    "sortOrder" : [
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}

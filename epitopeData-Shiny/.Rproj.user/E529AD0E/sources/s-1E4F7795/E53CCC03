@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1539871094869.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "E53CCC03",
+    "lastKnownWriteTime" : 1539875332,
+    "last_content_update" : 1539875332228,
+    "path" : "~/MEGAsync/shiny/epitopeData-Shiny/epData/ui.R",
+    "project_path" : "ui.R",
+    "properties" : {
+        "cursorPosition" : "49,12",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
