@@ -9,17 +9,16 @@ setwd("~/MEGAsync/shiny/epitopeData/epData")
 #Data
 dat<- read.csv("Book1.csv")
 
-#dat <- read_excel("preg_MatchMaker1.xlsx")
-#uniqEps <- preg_MatchMaker_wb_1 <- read_excel("preg_MatchMaker_wb_1.xlsm", sheet = "unique_child_eps_epReg")
-#change col name
-#names(dat)[names(dat) == "Kid_alleles_ep_MFI.Allele"] <- "allele"
-#names(uniqEps)[names(uniqEps) == "Kid_alleles_ep_MFI.Allele"] <- "allele"
 
 cutOff <- 500
 
-#dat2 <- dat[1000:8,]
+#Epitope reaction frequencies can be shown two ways:
+# 1) By Allele - only epitopes associate with an allele MM are counted
+# 2) By Epitope - all epitope MM are counted regardless of allele MM they were presented on
 
 
+
+#Group data by patient and allele MM
  gp1<- dat %>%
   group_by(PatientID, allele, epitope) %>%
   summarise(a_min = min(MFI))
