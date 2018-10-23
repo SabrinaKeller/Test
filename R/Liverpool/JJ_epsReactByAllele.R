@@ -6,7 +6,7 @@ dat <- read.csv("master.csv")
 library(dplyr)
 library(reshape2)
 library(ggplot2)
-library(magrittr)
+#library(magrittr)
 
 #Aim: Group by epitope and get all of its allele mismatches and percentage reactivity
 
@@ -15,11 +15,6 @@ library(magrittr)
 #3 For each MM allele of the source epitope, count number of times it appears (total MM count)
 #--> Count number of times it appears in POS/NEG groups
 
-
-#ep <- subset(dat, epitope == myEp)
-
-#Group data by patient and allele MM
-#test <- length(which(ep$PatientID == 15 & ep$epitope == "114R" & ep$MFI > 500))
 
 
 #Change epitope to levels as apply function doesn't like strings
@@ -109,8 +104,20 @@ ggplot(dm1,
   labs(x="Allele", y="Number of Patients")
 
 
-   
+#-----------------------------------------
+# Plot MFI range of each allele of a given epitope
+posEps <- subset(dat, dat$condition == 0)
 
+thisEp <- "76VDT"
+epi <- subset(posEps, epitope == thisEp)
+
+
+p <- ggplot(epi, aes(x=epAlele, y=MFI)) + 
+  geom_boxplot() +
+  ggtitle(thisEp) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+p
 
 
 
