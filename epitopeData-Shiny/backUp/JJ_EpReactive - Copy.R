@@ -38,7 +38,7 @@ dat$x <- x
 
 
 #INPUT: select an epitope 
-myEp <- "107W"
+myEp <- "114R"
 ep <- subset(dat, dat$epitope == myEp)
 #mmCount <- length(unique(ep$PatientID)) #allele MM
 
@@ -51,31 +51,74 @@ MM <- ep[!duplicated(ep$PatientID), ]
 #Count number  NEG epitopes of each MM allele that are the sources of the ep MM
 gp <- MM %>%
   group_by(allele, epDSA = condition == 0) %>%
-  summarise(epCount = n_distinct(PatientID))
+  summarise(epNeg = n_distinct(PatientID))
 
-#Apply factor to epDSA for NEG and POS
-gp$epDSA <- factor(gp$epDSA, labels = c("NEG", "POS"))
+#Count number of POS epitopes where epDSA = TRUE
+gp$epPos <- apply(gp[, grep("allele", names(gp))], MARGIN = 1, 
+                   function(x) sum(x == gp$allele & gp$epDSA == TRUE, na.rm = T))
 
+#Calc percentages - not currently used
+gp$percNEG <- gp$epNeg / (gp$epNeg + gp$epPos) * 100
+gp$percPOS <- 100 - gp$percNEG
+
+#drop the epDSA col and melt using epNeg and epPos cols together as labelling
+gp <- subset(gp, epDSA == FALSE)
+
+#melt using the cols needed - ie not the percentage cols etc
+gpMod <- gp[,c("allele", "epNeg", "epPos")]
+dm1 <- melt(gpMod)
+
+
+
+
+
+#melt in two stages, one for counts and one for percentages
+#dm1 <- melt(gp[, c("allele","count","epPos")])
+#Make sure cond (pos/neg label) is a factor and revrese it so they stack nicely
+#dm1$epDSA <- as.factor(dm1$epDSA)
+#dm1$epDSA <- factor(dm1$epDSA, levels = rev(levels(dm1$epDSA)))
+
+
+
+
+#dm2 <- melt(gp[,c("allele", "cond", "percNEG","percPOS")])
+#colnames(dm2) <- c("allele", "cond","variable2", "value2")
+#dm <- merge(dm1,dm2)            
+
+# From the source:
+# "allele" is the column we want to keep the same
+# "Test" is the column that contains the names of the new column to put things in
+# "measurement" holds the measurements
+#data_wide <- dcast(gp, allele ~ cond, value.var="count")
+
+#Change NA to zeros
+#data_wide[is.na(data_wide)] <- 0
+#Add a percentage col
+#data_wide$perc <- round(data_wide$'TRUE' / (data_wide$'TRUE' + data_wide$'FALSE') * 100,2)
+
+#Check levels exist for epNeg and epPos
+levels(dm1$variable)
 
 
 
 #Plot epitope reactivity that the mismatched alleles give rise to
-ggplot(gp, 
-       aes(x = allele, y = epCount, fill = reorder(epDSA, desc(epDSA)), label = "Epitope Reactivity")) +
+ggplot(dm1, 
+  aes(x = allele, y = value, fill = reorder(variable, desc(variable)), label = reorder(value, desc(value)))) +
   geom_bar(position = "fill", stat='identity')+
   geom_col()+
-  # reverse the data labels the same as the stack order
-  geom_text(aes(label=epCount), position =position_stack(vjust = 0.5)) +
-  #geom_text(size = 3) +
+ # reverse the data labels the same as the stack order
+  geom_text(aes(label=value), position =position_stack(vjust = 0.5)) +
+#geom_text(size = 3) +
   coord_flip()+
   ggtitle(myEp) +
   labs(x="Allele", y="Number of Patients")
 
 
+
 # Plot MFI range of each allele of a given epitope
 posEps <- subset(dat, dat$condition == 0)
 
-thisEp <- "107W"
+thisEp <- "76VDT"
 epi <- subset(posEps, epitope == thisEp)
 
 

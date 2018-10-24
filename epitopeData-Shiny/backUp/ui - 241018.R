@@ -1,6 +1,6 @@
 shinyUI(
     pageWithSidebar(
-      headerPanel("Epitope Mismtches by Allele"),
+      headerPanel("Header"),
       
       sidebarPanel(
         #Selector for file upload
@@ -14,11 +14,10 @@ shinyUI(
         
         sliderInput("mfi", "Please select cut off",
                     min = 100, max = 10000, value = 500,step = 100)
- 
+        
+        
         
       ),
-      
-      
       
 
       #These column selectors are dynamically created when the file is loaded
@@ -41,8 +40,7 @@ shinyUI(
       
       
    mainPanel(
-       plotOutput("myPlot1"),
-       plotOutput("myPlot2"),
+       plotOutput("myPlot"),
        tableOutput("geotable"),
        textOutput("myText")
        
