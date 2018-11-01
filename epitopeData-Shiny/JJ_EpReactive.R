@@ -42,8 +42,7 @@ myEp <- "107W"
 ep <- subset(dat, dat$epitope == myEp)
 #mmCount <- length(unique(ep$PatientID)) #allele MM
 
-#GROUP BY PID, ALLELE, EPITOPE AND CONDITION THEN COUNT NUM ZEROS (POS) AND NON-ZERO (NEG)****
-#OR SUBSET BY BY ALLELE EPITOPE ANFD EACH CONDITION - COUNT NROWS AND CREATE NEW DF FOR GRAPHING*****
+
 
 #Reduce df to 1 row per Px allele MM
 MM <- ep[!duplicated(ep$PatientID), ]
@@ -59,7 +58,7 @@ gp$epDSA <- factor(gp$epDSA, labels = c("NEG", "POS"))
 
 
 
-#Plot epitope reactivity that the mismatched alleles give rise to
+#Stack Plot epitope reactivity that the mismatched alleles give rise to
 ggplot(gp, 
        aes(x = allele, y = epCount, fill = reorder(epDSA, desc(epDSA)), label = "Epitope Reactivity")) +
   geom_bar(position = "fill", stat='identity')+
@@ -72,7 +71,7 @@ ggplot(gp,
   labs(x="Allele", y="Number of Patients")
 
 
-# Plot MFI range of each allele of a given epitope
+# Box Plot MFI range of each allele of a given epitope
 posEps <- subset(dat, dat$condition == 0)
 
 thisEp <- "107W"
